@@ -1,0 +1,25 @@
+server:
+  port: 8081
+jwt:
+ #  AccessToken 过期时间单位分钟
+ EXPIRE_TIME: 2
+ # RefreshToken 过期时间单位分钟
+ REFRESH_EXPIRE_TIME: 10
+ # 密钥盐
+ TOKEN_SECRET: 50eFa4d9W8ba4d*bb276f^11
+swagger:
+  enabled: true
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/jwt?useSSL=false&useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    host: 127.0.0.1
+    port: 6379
+mybatis-plus:
+  mapper-locations: classpath:com/maplexl/shiroJwtRedis/mapper/xml/*.xml
+logging:
+  level:
+   com.maplexl: debug

@@ -10,7 +10,7 @@ import com.maplexl.shiroJwtRedis.services.JwtToken;
 import com.maplexl.shiroJwtRedis.services.UserService;
 import com.maplexl.shiroJwtRedis.util.JwtUtil;
 import com.maplexl.shiroJwtRedis.util.RedisUtil;
-import com.sun.net.httpserver.Authenticator;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
@@ -33,6 +33,7 @@ import java.util.UUID;
  */
 @RestController
 @Slf4j
+@Api(tags = "登录注册模块")
 public class LoginController {
     @Resource
     UserService userService;
@@ -47,8 +48,9 @@ public class LoginController {
      * @param response 响应
      * @return 登录成功则返回token
      */
-    @ApiOperation("登录接口")
+    @ApiOperation(value = "登录接口",notes = "获取token", httpMethod = "POST")
     @PostMapping("/login")
+    @JwtToken
     public BaseResponse login(@RequestBody User user, HttpServletResponse response) {
 
         JSONObject jsonObject=new JSONObject();
@@ -70,7 +72,7 @@ public class LoginController {
             //密码正确 生成token
             String token = JwtUtil.sign((long)dbUser.getUserId());
             RedisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, token,JwtUtil.REFRESH_EXPIRE_TIME );
-            //保存用户到redis，不用设置过期时间 token为key
+            //保存用户信息到redis，不用设置过期时间 token为key
             RedisUtil.set(CommonConstant.PREFIX_USER + dbUser.getUserId(),dbUser);
             dbUser.setPassword(null);
             response.setHeader("Authorization", token);
@@ -88,7 +90,7 @@ public class LoginController {
      * @param user 用户信息
      * @return 是否保存成功
      */
-    @ApiOperation("注册接口")
+    @ApiOperation(value = "注册接口",notes = "注册用户", httpMethod = "POST")
     @PostMapping("/register")
     public BaseResponse add(@RequestBody User user) {
         //验证用户名是否重复
@@ -114,6 +116,7 @@ public class LoginController {
      * 登出
      * @return 是否登出
      */
+    @ApiOperation(value = "退出登录",notes = "注销token", httpMethod = "GET")
     @GetMapping("/logout")
     public BaseResponse logout(HttpServletRequest request){
         /*
@@ -133,13 +136,13 @@ public class LoginController {
      * 该接口需要带签名才能访问
      * @return
      */
+    @ApiOperation(value = "无token验证",httpMethod = "GET")
     @GetMapping("/getMessage")
-    @JwtToken
     public String getMessage(){
         return "你已通过验证";
     }
 
-
+    @ApiOperation(value = "有token验证",httpMethod = "GET")
     @JwtToken
     @GetMapping("/getMessage1")
     public String getMessage1(HttpServletRequest request){
@@ -147,7 +150,7 @@ public class LoginController {
         return userId.toString();
     }
 
-
+    @ApiOperation(value = "有token验证",httpMethod = "GET")
     @JwtToken
     @GetMapping("/getUser")
     public BaseResponse getUser(HttpServletRequest request){
@@ -156,7 +159,7 @@ public class LoginController {
         return new BaseResponse(StatusCode.SUCCESS,o);
     }
 
-
+    @ApiOperation(value = "有token验证",httpMethod = "GET")
     @GetMapping("/getUserInfo")
     @JwtToken
     public BaseResponse getUserInfo(HttpServletRequest request){

@@ -4,6 +4,7 @@ import com.maplexl.shiroJwtRedis.constant.CommonEnum;
 import com.maplexl.shiroJwtRedis.pojo.User;
 import com.maplexl.shiroJwtRedis.pojo.vo.Result;
 import com.maplexl.shiroJwtRedis.services.UserService;
+import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,7 @@ import java.util.List;
  * @date 2020/10/31
  */
 @RestController
+@Api(tags = "用户模块")
 public class UserController {
     @Resource
     UserService userService;

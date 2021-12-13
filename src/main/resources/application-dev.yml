@@ -4,7 +4,7 @@ jwt:
  #  AccessToken 过期时间单位分钟
  EXPIRE_TIME: 2
  # RefreshToken 过期时间单位分钟
- REFRESH_EXPIRE_TIME: 10
+ REFRESH_EXPIRE_TIME: 5
  # 密钥盐
  TOKEN_SECRET: 50eFa4d9W8ba4d*bb276f^11
 swagger:

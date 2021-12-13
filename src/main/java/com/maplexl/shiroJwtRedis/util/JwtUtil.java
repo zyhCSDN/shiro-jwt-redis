@@ -79,8 +79,8 @@ public class JwtUtil {
                     //token过期时间
                     .withExpiresAt(expireAt)
                     .sign(Algorithm.HMAC256(TOKEN_SECRET));
-            log.info("客户端token过期时间EXPIRE_TIME:{}",EXPIRE_TIME);
-            log.info(" 服务器token过期时间REFRESH_EXPIRE_TIME:{}",REFRESH_EXPIRE_TIME);
+            log.info("客户端token过期时间EXPIRE_TIME:{}秒",EXPIRE_TIME/1000);
+            log.info(" 服务器token过期时间REFRESH_EXPIRE_TIME:{}秒",REFRESH_EXPIRE_TIME);
             log.info("TOKEN_SECRET:{}",TOKEN_SECRET);
         return token;
     }
@@ -100,7 +100,7 @@ public class JwtUtil {
             log.info("授权认证通过");
             log.info("userId:    [{}]", jwt.getClaim("userId").asLong());
             Date expiresAt = jwt.getExpiresAt();
-            log.info("过期时间：      [{}]", SimpleDateFormat.getDateTimeInstance().format(expiresAt));
+            log.info("过期时间： [{}]", SimpleDateFormat.getDateTimeInstance().format(expiresAt));
             return true;
         } catch (JWTVerificationException exception) {
            return false;
@@ -132,7 +132,7 @@ public class JwtUtil {
                 String newToken = sign(getUserId(token));
                 //redis设置新的token为30分钟过期，签名token其实还是五分钟
                 RedisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, newToken,REFRESH_EXPIRE_TIME);
-                log.info("redis原token令牌：{}", redisToken);
+                log.info("redis原token令牌：{}", token);
                 log.info("token过期新生成的token令牌：{}", newToken);
             }
             return true;

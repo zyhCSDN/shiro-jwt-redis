@@ -42,8 +42,8 @@ public class JwtUtil {
     /**
      * 设置token过期时间及密钥盐
      *
-     * @param expireTime        客户端token过期时间
-     * @param refreshExpireTime 服务器token过期时间
+     * @param expireTime        客户端token过期时间 毫秒
+     * @param refreshExpireTime 服务器token过期时间 秒
      * @param tokenSecret       token加密使用的盐值
      */
     public static void setProperties(long expireTime, long refreshExpireTime, String tokenSecret) {
@@ -79,9 +79,9 @@ public class JwtUtil {
                     //token过期时间
                     .withExpiresAt(expireAt)
                     .sign(Algorithm.HMAC256(TOKEN_SECRET));
-            log.info("客户端token过期时间EXPIRE_TIME:{}秒",EXPIRE_TIME/1000);
-            log.info(" 服务器token过期时间REFRESH_EXPIRE_TIME:{}秒",REFRESH_EXPIRE_TIME);
-            log.info("TOKEN_SECRET:{}",TOKEN_SECRET);
+            log.info("jwt sign过期时间EXPIRE_TIME:{}秒",EXPIRE_TIME/1000);
+            log.info(" redisToken过期时间REFRESH_EXPIRE_TIME:{}秒",REFRESH_EXPIRE_TIME);
+            log.info("密钥盐TOKEN_SECRET:{}",TOKEN_SECRET);
         return token;
     }
 
@@ -97,7 +97,7 @@ public class JwtUtil {
             Algorithm algorithm = Algorithm.HMAC256(TOKEN_SECRET);
             JWTVerifier verifier = JWT.require(algorithm).build();
             DecodedJWT jwt = verifier.verify(token);
-            log.info("授权认证通过");
+            log.info("jwt sign 授权认证通过");
             log.info("userId:    [{}]", jwt.getClaim("userId").asLong());
             Date expiresAt = jwt.getExpiresAt();
             log.info("过期时间： [{}]", SimpleDateFormat.getDateTimeInstance().format(expiresAt));
@@ -117,23 +117,23 @@ public class JwtUtil {
      * 当该用户再次请求时，通过后端的一个 jwt Filter 校验前端传的token是否是有效token，如果没有传递token或者token错误表明是非法请求，直接抛出异常即可；
      * 根据规则取出cache token，判断cache token是否存在，此时主要分以下几种情况：
      * cache token 不存在  这种情况表明该用户账户空闲超时，返回用户信息已失效，请重新登录。
-     * cache token 存在，则需要使用jwt工具类验证该cache token 是否过期超时，不过期无需处理。
+     * cache token 存在，则需要使用jwt工具类验证该jwt token 是否过期超时，不过期无需处理。
      * <p>
      * 过期则表示该用户一直在操作只是token失效了，后端程序会给token对应的key映射的value值重新生成jwt token并覆盖value值，该缓存生命周期重新计算。
      *
      * @param token 原令牌
      */
     public static boolean refreshToken(String token) {
-        String redisToken = String.valueOf(RedisUtil.get(CommonConstant.PREFIX_USER_TOKEN + token));
-        if (CommonUtils.isNotEmpty(redisToken)) {
-            // 校验sign token有效性
+        token = String.valueOf(RedisUtil.get(CommonConstant.PREFIX_USER_TOKEN + token));
+        if (CommonUtils.isNotEmpty(token)) {
+            // 校验sign有效性
             if (!checkSign(token)) {
                 //已过期
                 String newToken = sign(getUserId(token));
                 //redis设置新的token为30分钟过期，签名token其实还是五分钟
                 RedisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, newToken,REFRESH_EXPIRE_TIME);
                 log.info("redis原token令牌：{}", token);
-                log.info("token过期新生成的token令牌：{}", newToken);
+                log.info("jwtToken过期新生成的jwtToken令牌：{}", newToken);
             }
             return true;
         }

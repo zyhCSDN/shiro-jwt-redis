@@ -38,10 +38,6 @@ public class LoginController {
     @Resource
     UserService userService;
 
-
-    @Autowired
-    private UserMapper userMapper;
-
     /**
      * 登录接口
      * @param user 用户
@@ -62,7 +58,7 @@ public class LoginController {
         //查询是否有此用户
         QueryWrapper<User> queryWrapper = new QueryWrapper();
         queryWrapper.eq("user_name", userName);
-        User dbUser=  userMapper.selectOne(queryWrapper);
+        User dbUser=  userService.getOne(queryWrapper);
         if (dbUser == null) {
             return new BaseResponse(StatusCode.NO_SUCH_USER);
         }

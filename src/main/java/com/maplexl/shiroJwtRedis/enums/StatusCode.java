@@ -33,7 +33,8 @@ public enum StatusCode {
     ASSIGN_FAIL(1501,"分配失败！"),
     ORDER_SUCCESS(1600,"排序成功！"),
     ORDER_FAIL(1601,"排序失败！"),
-    OUT_OF_STOCK(-100,"库存不足！");
+    OUT_OF_STOCK(-100,"库存不足！"),
+    SERVER_ERROR(500,"服务异常啦！");
     private Integer code;
     private String msg;
 

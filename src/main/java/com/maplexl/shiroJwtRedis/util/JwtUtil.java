@@ -76,6 +76,8 @@ public class JwtUtil {
                     //存放数据
                     .withClaim("userId", userId)
                     .withClaim("currentTime", currentTime)
+                    //是否是会员
+                    .withClaim("isVip", 1L)
                     //token过期时间
                     .withExpiresAt(expireAt)
                     .sign(Algorithm.HMAC256(TOKEN_SECRET));
@@ -162,6 +164,7 @@ public class JwtUtil {
         try {
             DecodedJWT jwt = JWT.decode(token);
             Long userId = jwt.getClaim("userId").asLong();
+            Long isVip = jwt.getClaim("isVip").asLong();
             Object o = RedisUtil.get(CommonConstant.PREFIX_USER + userId);
             User user = JSONObject.parseObject(JSONObject.toJSONString(o), User.class);
             return user;

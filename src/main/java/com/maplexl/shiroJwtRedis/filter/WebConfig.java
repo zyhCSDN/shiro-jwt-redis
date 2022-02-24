@@ -1,7 +1,6 @@
 package com.maplexl.shiroJwtRedis.filter;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -30,7 +29,7 @@ public class WebConfig implements WebMvcConfigurer {
      * 添加jwt拦截器
      * @param registry
      */
-    final String[] notLoginInterceptPaths = {"/signIn","/login","/index/**","/register/**","/kaptcha.jpg/**","/kaptcha/**"};
+    final String[] notLoginInterceptPaths = {"/signIn","/error","/login","/index/**","/register/**","/kaptcha.jpg/**","/kaptcha/**"};
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

@@ -3,10 +3,9 @@ package com.maplexl.shiroJwtRedis.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.maplexl.shiroJwtRedis.constant.CommonConstant;
 import com.maplexl.shiroJwtRedis.enums.StatusCode;
-import com.maplexl.shiroJwtRedis.mapper.UserMapper;
+import com.maplexl.shiroJwtRedis.exception.GlobalException;
 import com.maplexl.shiroJwtRedis.pojo.User;
 import com.maplexl.shiroJwtRedis.response.BaseResponse;
-import com.maplexl.shiroJwtRedis.services.JwtToken;
 import com.maplexl.shiroJwtRedis.services.UserService;
 import com.maplexl.shiroJwtRedis.util.JwtUtil;
 import com.maplexl.shiroJwtRedis.util.RedisUtil;
@@ -15,7 +14,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.apache.shiro.crypto.hash.SimpleHash;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,7 +44,6 @@ public class LoginController {
      */
     @ApiOperation(value = "登录接口",notes = "获取token", httpMethod = "POST")
     @PostMapping("/login")
-    @JwtToken
     public BaseResponse login(@RequestBody User user, HttpServletResponse response) {
 
         JSONObject jsonObject=new JSONObject();
@@ -139,15 +136,23 @@ public class LoginController {
     }
 
     @ApiOperation(value = "有token验证",httpMethod = "GET")
-    @JwtToken
     @GetMapping("/getMessage1")
     public String getMessage1(HttpServletRequest request){
         Long userId = JwtUtil.getUserId(request);
         return userId.toString();
     }
 
+
     @ApiOperation(value = "有token验证",httpMethod = "GET")
-    @JwtToken
+    @GetMapping("/getMessage2")
+    public void getMessage2(HttpServletRequest request){
+        Long userId = JwtUtil.getUserId(request);
+        //在service实现类里，可抛出异常
+        throw  new GlobalException(StatusCode.REGISTER_SUCCESS);
+    }
+
+
+    @ApiOperation(value = "有token验证",httpMethod = "GET")
     @GetMapping("/getUser")
     public BaseResponse getUser(HttpServletRequest request){
         Long userId = JwtUtil.getUserId(request);
@@ -157,7 +162,6 @@ public class LoginController {
 
     @ApiOperation(value = "有token验证",httpMethod = "GET")
     @GetMapping("/getUserInfo")
-    @JwtToken
     public BaseResponse getUserInfo(HttpServletRequest request){
         String accessToken = request.getHeader("token");
         User userInfo = JwtUtil.getUserInfo(accessToken);

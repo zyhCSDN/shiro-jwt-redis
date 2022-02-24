@@ -1,11 +1,7 @@
 package com.maplexl.shiroJwtRedis.filter;
 
-import com.maplexl.shiroJwtRedis.constant.CommonConstant;
-import com.maplexl.shiroJwtRedis.pojo.User;
-import com.maplexl.shiroJwtRedis.services.JwtToken;
 import com.maplexl.shiroJwtRedis.services.UserService;
 import com.maplexl.shiroJwtRedis.util.JwtUtil;
-import com.maplexl.shiroJwtRedis.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,8 +12,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 拦截器拦截带有注解的接口 JwtInterceptor.java

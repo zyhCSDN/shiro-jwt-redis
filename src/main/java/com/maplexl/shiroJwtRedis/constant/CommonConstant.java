@@ -80,9 +80,9 @@ public interface CommonConstant {
     /**
      * 登录用户令牌缓存KEY前缀
      */
-    String PREFIX_USER_TOKEN = "PREFIX:USER:TOKEN:";
+    String PREFIX_USER_TOKEN = "USER:TOKEN:";
 
-    String PREFIX_USER = "PREFIX:USER:";
+    String PREFIX_USER = "USER:";
 
     /**
      * token的key
